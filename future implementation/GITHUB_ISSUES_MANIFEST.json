@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "repository": "tarunpa1998/logg-main",
+  "repository_ssh": "git@github.com:tarunpa1998/logg-main.git",
+  "publication_status": "not_published",
+  "publication_blockers": [
+    "The local Logg-main folder is not a Git repository.",
+    "GitHub CLI (gh) is not installed in the current execution environment.",
+    "Remote repository permissions and authentication have not been verified."
+  ],
+  "issue_count": 51,
+  "milestones": [
+    { "name": "Logg Mobile V1", "description": "Native iOS/Android application, Personal/Family/Business profiles, English/German parity, current web functionality, and offline Kip." },
+    { "name": "Logg Mobile Post-V1", "description": "Deferred Kip voice/OCR/invoice intake, fiscal verification, archiving, fine-tuning, and additional mobile languages." }
+  ],
+  "common_body_markdown": "## Required implementation contract\nFollow `future implementation/AI_AGENT_IMPLEMENTATION_RULES.md`, `V1_BUILD_PLAN.md`, and the linked feature plans. Inspect actual web/backend contracts before implementation.\n\n## Definition of done for every implementation task\n- Use the global theme/component system; iOS follows Apple HIG and Android follows Material 3.\n- Translate every user-facing string and accessibility message into en and de. Other mobile languages are later scope; preserve existing web translations.\n- Scope data, cache keys, categories, permissions, and outbox operations to Personal, Family, or Business.\n- Run meaningful checks and record actual evidence. A missing device/build check is pending, not passed.\n- After each meaningful task update `future implementation/IMPLEMENTATION_STATUS.md`, `IMPLEMENTATION_CHECKLIST.md`, and `IMPLEMENTATION_LOG.md`; include what remains and the next task.\n- Preserve existing web behavior and financial precision. No generic WebView for core workflows.\n- Keep blocked work open. Issue creation or document publication does not mean implementation is complete.\n\n## Issue completion lifecycle\n- Resolve the actual GitHub number from github_issue_map; work on one primary issue at a time after verifying its dependencies. Keep it open while in progress or blocked.\n- Complete and verify every acceptance criterion, check only evidence-backed items, and update the status, checklist, and log. Preserve existing issue metadata and links.\n- With user-authorized commits/pushes, publish the task-scoped changes/evidence to the agreed implementation branch and verify the remote commit. If the workflow requires PR merge, verify it before closure. Do not close for unpublished local work.\n- Add a completion comment linking delivery evidence and actual checks; use gh issue close with --reason completed, then verify CLOSED with gh issue view. A failed or unavailable GitHub operation remains pending.\n- After verified closure, check the matching V1 epic child item, record the closed issue and next unblocked task in the progress files, and publish those tracking updates when authorized.\n- Close EPIC-V1 only after the required V1 children and release criteria pass; L01-L07 are separate post-V1 work. Follow section 16 G of the agent rules for the full lifecycle.\n",
+  "publication_instructions": "Follow GITHUB_ISSUES_HANDOFF.md. Render each issue body from body_markdown, a Plan references section using plan_files, the common body, and a Dependency section. Include the stable HTML marker <!-- logg-mobile-backlog:ID -->. Create in this file's order; replace dependency IDs with real URLs from github_issue_map after creation. Use gh and avoid duplicate titles/markers across open and closed issues. Do not implement application features during publication.",
+  "github_issue_map": {},
+  "issues": [
+    {
+      "id": "EPIC-V1",
+      "title": "[EPIC-V1] Deliver Logg Mobile V1 for iOS and Android",
+      "scope": "v1",
+      "kind": "epic",
+      "phase": "release-overview",
+      "depends_on": [],
+      "plan_files": ["V1_BUILD_PLAN.md", "AI_AGENT_IMPLEMENTATION_RULES.md", "IMPLEMENTATION_SEQUENCE.md"],
+      "body_markdown": "## Objective\nDeliver one native Expo/React Native app with Personal, Family, and Business profiles, current web functionality, consistent en/de UI, and Kip in V1.\n\n## Release acceptance\n- [ ] Track M01 through M43 as child tasks with actual issue links.\n- [ ] One-profile direct startup and safe multi-profile resume/picker work.\n- [ ] Personal data stays private; Family and Business ledgers are isolated.\n- [ ] Core workflows are native and every current web route has an explicit V1 treatment.\n- [ ] Kip creates offline income/expense entries and delayed bank matching does not count them twice.\n- [ ] iOS/Android build, localization, accessibility, visual, sync, and web regression evidence is recorded.\n- [ ] Deferred L01 through L07 are linked as post-V1 work, not V1 release blockers.\n\nThis epic tracks delivery; it does not require one giant implementation change. Close it only after the child-task release criteria are verified."
+    },
+    {
+      "id": "M01",
+      "title": "[M01] Establish V1 scope, API contracts, and complete web route parity inventory",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": [],
+      "plan_files": ["V1_BUILD_PLAN.md", "MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md", "APPROVAL_CHECKLIST.md"],
+      "body_markdown": "## Scope\nInspect frontend/src/App.tsx, pages, components, API methods, types, and backend routers/schemas. Freeze the current reference revision and record plan conflicts, backend additions, native-platform requirements, and existing tests.\n\n## Acceptance criteria\n- [ ] Every current web route and important subflow maps to an owning issue and native/adapted/deep-link/fallback treatment.\n- [ ] Core finance and Kip flows are native; any low-frequency fallback or deferral has an explicit reason and approval status.\n- [ ] Verify API response types, precision, auth challenges, role/module rules, and existing provider behavior.\n- [ ] Record the one-app and Personal/Family/Business decisions and unresolved branding/billing choices honestly.\n- [ ] Create the finalized scoped specification if repository rules require it; do not invent user approvals.\n\n## Verification\nReview the parity inventory against actual routes and backend contracts, including aliases and callbacks."
+    },
+    {
+      "id": "M02",
+      "title": "[M02] Establish persistent progress tracking and baseline validation",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": ["M01"],
+      "plan_files": ["AI_AGENT_IMPLEMENTATION_RULES.md", "IMPLEMENTATION_CHECKLIST.md", "IMPLEMENTATION_SEQUENCE.md"],
+      "body_markdown": "## Scope\nCreate or preserve IMPLEMENTATION_STATUS.md and IMPLEMENTATION_LOG.md inside future implementation/. Map issue IDs to checklist items and record the actual frontend/backend test baseline.\n\n## Acceptance criteria\n- [ ] Status records current phase, active issue, blockers, remaining work, and exact next step.\n- [ ] Log records commands/checks, outputs or evidence links, files changed, and limitations after each task.\n- [ ] Checklist marks only verified implementation as complete; planning approvals and publication are separate states.\n- [ ] Add appropriate typecheck, locale, and test checks to existing CI when the workspace exists.\n- [ ] Existing failures are recorded before mobile changes, without disguising them as regressions or passes.\n\n## Verification\nA new agent can identify completed and remaining work from the repository files without the previous chat."
+    },
+    {
+      "id": "M03",
+      "title": "[M03] Scaffold one Expo mobile workspace and verify native development builds",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": ["M01", "M02"],
+      "plan_files": ["IOS_ANDROID_APP_PLAN.md", "V1_BUILD_PLAN.md", "V1_MOBILE_SHELL_DESIGN_AND_PROFILE_STARTUP_PLAN.md"],
+      "body_markdown": "## Scope\nCreate apps/mobile and additive shared-package/workspace configuration. Select compatible stable Expo, React Native, navigation, native-module, and TypeScript versions after checking current documentation. Use development builds rather than relying on Expo Go for local AI.\n\n## Acceptance criteria\n- [ ] One source app produces both platforms; no duplicate apps/ios and apps/android screen trees.\n- [ ] Lockfile, strict typing, scripts, aliases, environment configuration, and development/release build profiles are documented.\n- [ ] Existing frontend install/build and backend setup still work, including Docker build contexts.\n- [ ] Android development build runs and iOS development build runs using macOS/Xcode or EAS with available credentials.\n- [ ] Record any unavailable signing/device checks rather than claiming success.\n\n## Verification\nCapture actual compiler/build and device/simulator launch evidence for both platforms."
+    },
+    {
+      "id": "M04",
+      "title": "[M04] Extract native-safe shared API contracts and domain helpers",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": ["M03"],
+      "plan_files": ["FRONTEND_INTEGRATION_PLAN.md", "BACKEND_MOBILE_API_PLAN.md"],
+      "body_markdown": "## Scope\nEstablish packages/api and packages/core from audited existing types, methods, validation, and pure utilities. Inject token storage, active-profile context, base URL, and unauthorized handling.\n\n## Acceptance criteria\n- [ ] Shared code has no localStorage, window, document, React DOM, or native storage dependency.\n- [ ] Password token and 2FA challenge responses are typed accurately.\n- [ ] Profile headers and errors are consistent with backend schemas.\n- [ ] Preserve existing financial API precision; conversion to local minor units is explicit and validated.\n- [ ] Web adoption is incremental, with compatibility exports and existing build/container behavior maintained.\n\n## Verification\nStrict typechecks and contract tests prove auth, workspace/profile headers, representative transaction responses, and web compatibility."
+    },
+    {
+      "id": "M05",
+      "title": "[M05] Implement shared English/German localization and translation coverage checks",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": ["M03", "M04"],
+      "plan_files": ["DACH_LOCALIZATION_AND_PRODUCT_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md", "AI_AGENT_IMPLEMENTATION_RULES.md"],
+      "body_markdown": "## Scope\nCreate native-safe i18n resources using existing en/de translations. Separate language detection/storage adapters from shared resource data. V1 interface languages are en and de; regional formatting can use de-AT/de-DE/de-CH without requiring three separate translation catalogs.\n\n## Acceptance criteria\n- [ ] Stable namespaces and a glossary cover Personal, Family, Business, Kip, bank status, reconciliation, and finance terminology.\n- [ ] No hard-coded UI/accessibility strings; interpolation and pluralization agree between languages.\n- [ ] Key coverage and missing translations fail meaningful checks; English fallback does not hide unfinished German screens.\n- [ ] Language persists locally and switches without data loss.\n- [ ] Currency, dates, timezone, and tax jurisdiction remain separate from UI language; support EUR/CHF and explicit USD.\n- [ ] Existing web language support is preserved.\n\n## Verification\nRun locale checks and review long German labels, validation, offline messages, and accessibility text on both platforms."
+    },
+    {
+      "id": "M06",
+      "title": "[M06] Build the global theme and reusable native iOS/Android component system",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "foundation",
+      "depends_on": ["M03", "M05"],
+      "plan_files": ["MOBILE_DESIGN_SYSTEM_PLAN.md", "IOS_ANDROID_APP_PLAN.md", "V1_MOBILE_SHELL_DESIGN_AND_PROFILE_STARTUP_PLAN.md"],
+      "body_markdown": "## Scope\nCreate the public theme index at apps/mobile/src/theme/index.ts, semantic tokens, component recipes, and platform adapters. Use system typography, restrained initial semantic colors, and a configurable brand palette.\n\n## Acceptance criteria\n- [ ] System/light/dark modes cover typography, surfaces, statuses, spacing, radii, focus, icons, motion, and component states.\n- [ ] iOS uses system SF typography, appropriate grouped lists/native controls; Android uses system typography and Material 3 feedback.\n- [ ] Buttons, inputs, lists, sheets, navigation, amount display, empty/error/offline states, and Kip action share approved tokens.\n- [ ] No one-off raw colors/fonts in screens; platform-specific components retain shared semantics.\n- [ ] Review samples include all profiles, transactions, Kip, and reconciliation in en/de and both themes.\n\n## Verification\nRecord contrast, touch-target, large-text, reduced-motion, and visual evidence; do not freeze a custom brand palette without review."
+    },
+    {
+      "id": "M07",
+      "title": "[M07] Implement platform-native navigation and the mobile application shell",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "shell",
+      "depends_on": ["M06"],
+      "plan_files": ["IOS_ANDROID_APP_PLAN.md", "V1_MOBILE_SHELL_DESIGN_AND_PROFILE_STARTUP_PLAN.md"],
+      "body_markdown": "## Scope\nBuild auth and app routes, native navigation stacks/tabs, profile-aware headers, safe areas, and common screen boundaries.\n\n## Acceptance criteria\n- [ ] iOS large/compact titles, toolbar placement, back gestures, and tab hierarchy follow HIG.\n- [ ] Android system/predictive back, edge-to-edge insets, bottom navigation, and pressed states work.\n- [ ] Modules and membership determine destinations; advanced features live in organized secondary navigation.\n- [ ] Stable skeleton/error boundaries avoid layout jumps; deep links have defined destinations.\n- [ ] Navigation supports small phones, tablets, large text, and reduced motion.\n\n## Verification\nExercise navigation, dismissal/back behavior, keyboard overlap, and accessible reading order on both platforms."
+    },
+    {
+      "id": "M08",
+      "title": "[M08] Implement real authentication, setup, registration, 2FA, and secure sessions",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "shell",
+      "depends_on": ["M04", "M07"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "V1_MOBILE_SHELL_DESIGN_AND_PROFILE_STARTUP_PLAN.md"],
+      "body_markdown": "## Scope\nPort /setup, /login, /register and actual supported recovery/security subflows using existing backend contracts, SecureStore/Keychain/Keystore, and native forms.\n\n## Acceptance criteria\n- [ ] Normal password login and TOTP challenges work, including failures and temporary-token expiry.\n- [ ] Session restoration, profile identity isolation, logout, and online 401 handling are explicit.\n- [ ] Passwords/tokens/TOTP are not logged or stored in plain preferences.\n- [ ] Offline local access policy is separate from online authorization; reconnect requests require valid server authentication.\n- [ ] Unsupported recovery/setup behavior is documented rather than mocked as working.\n\n## Verification\nUse a real/test backend for success/failure/challenge/logout flows and ensure no previous user's data renders after account changes."
+    },
+    {
+      "id": "M09",
+      "title": "[M09] Preserve web authentication capabilities through native OIDC/passkey flows",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "shell",
+      "depends_on": ["M08"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nAudit existing OIDC/passkey/security settings and implement native equivalents or an explicitly approved functional V1 treatment. Kip is not an authentication mechanism.\n\n## Acceptance criteria\n- [ ] OIDC system-browser flow validates state/redirect targets and preserves web behavior.\n- [ ] Passkey capability, relying-party/application association, registration, login, and available second-factor behavior are evaluated on both platforms.\n- [ ] Missing native capability has a working permitted sign-in alternative, without bypassing 2FA.\n- [ ] Callback secrets are not logged or placed in persistent insecure URLs/storage.\n\n## Verification\nExercise supported account configurations and malicious/expired callbacks; record native feature coverage and any approved limitations."
+    },
+    {
+      "id": "M10",
+      "title": "[M10] Extend profile membership and module contracts for Personal, Family, and Business",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "data-foundation",
+      "depends_on": ["M01", "M04"],
+      "plan_files": ["WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md", "BACKEND_MOBILE_API_PLAN.md"],
+      "body_markdown": "## Scope\nMap the user-facing profile model onto existing backend workspace data. Define Family explicitly through a reviewed kind/purpose addition rather than silently treating private Personal as shared.\n\n## Acceptance criteria\n- [ ] Additive migration/schema/module changes preserve existing personal/business records and web clients.\n- [ ] Membership roles authorize reads/writes on the server; billing alone never grants access to another user's profile.\n- [ ] Personal defaults private; Family shares only explicitly scoped records; Business has separate fiscal settings.\n- [ ] Contracts describe membership, module visibility, default currency, locale, and timezone.\n- [ ] Use actual Alembic head/revision identifiers, not a hard-coded draft migration number.\n\n## Verification\nTest existing records, invitations, module rules, migration behavior, and cross-profile access denial."
+    },
+    {
+      "id": "M11",
+      "title": "[M11] Build minimal onboarding and editable persona-based category templates",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "shell",
+      "depends_on": ["M08", "M10"],
+      "plan_files": ["WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nAutomatically create/load the default Personal profile and ask only essential locale/currency questions. Offer optional Student, Employee, and other approved editable starter templates.\n\n## Acceptance criteria\n- [ ] Optional persona, bank connection, Family, and Business setup can be skipped.\n- [ ] Seeding is idempotent and never overwrites existing categories or user edits.\n- [ ] Templates/categories use consistent en/de labels and real valid category IDs.\n- [ ] Country/locale suggestions do not silently select tax jurisdiction for a business.\n- [ ] Returning and invited users are not forced through new-user onboarding.\n\n## Verification\nTest signup, skipped questions, repeated setup, existing account login, and category editing after seeding."
+    },
+    {
+      "id": "M12",
+      "title": "[M12] Implement versioned SQLite repositories with user/profile isolation",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "offline-foundation",
+      "depends_on": ["M03", "M04", "M10"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "BACKEND_MOBILE_API_PLAN.md", "mobile/SQLITE_SCHEMA.sql"],
+      "body_markdown": "## Scope\nReview draft SQL and service assumptions, then implement versioned migrations and repositories. Benchmark expo-sqlite first; retain an adapter instead of adopting multiple SQLite bindings.\n\n## Acceptance criteria\n- [ ] Users/profiles/accounts scope profile summaries, categories, accounts, transactions, and queued writes.\n- [ ] Validated monetary representation uses currency precision, not an unconditional two-decimal multiplier.\n- [ ] Migration failure/recovery and transactional ledger/outbox changes are defined.\n- [ ] Logout/account changes cannot expose the previous user's cached data.\n- [ ] Cache validity, local access, server permission revocation, and encrypted-data requirements are documented.\n\n## Verification\nRun real SQLite migrations, restart/replay checks, profile isolation tests, and performance measurements."
+    },
+    {
+      "id": "M13",
+      "title": "[M13] Add idempotent backend mutation and cursor-based mobile sync contracts",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "offline-foundation",
+      "depends_on": ["M04", "M10"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "BACKEND_IMPLEMENTATION_PLAN.md"],
+      "body_markdown": "## Scope\nImplement additive bootstrap/sync capabilities or a proven equivalent using current routes. Design client-ID uniqueness, change versions, deletion/tombstone semantics, acknowledgements, and conflicts before shipping offline writes.\n\n## Acceptance criteria\n- [ ] Same mutation replay returns the same canonical result without duplicating rows.\n- [ ] Cursor handles updates and deletions, pagination, stale cursor/full-resync, and partial batch failures.\n- [ ] Membership and role are verified for every pushed/pulled record.\n- [ ] Monetary precision and existing transaction response compatibility are preserved.\n- [ ] Read/bootstrap payloads stay bounded; existing web routes keep working.\n\n## Verification\nIntegration tests cover concurrent replay, wrong-profile access, viewer writes, stale cursors, tombstones, and rollback."
+    },
+    {
+      "id": "M14",
+      "title": "[M14] Implement durable outbox, reconnect synchronization, and conflict recovery",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "offline-foundation",
+      "depends_on": ["M08", "M12", "M13"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nSave ledger mutations and outbox entries atomically; synchronize on foreground/reconnect with bounded retries and platform background scheduling where available.\n\n## Acceptance criteria\n- [ ] Every mutation retains original user/profile/client IDs and dependencies.\n- [ ] App termination, lost acknowledgement, retry, and switching profiles do not duplicate or relocate writes.\n- [ ] Acknowledgements, conflicts, validation rejection, revoked permissions, and stale cursors have actionable UI states.\n- [ ] Remote changes/tombstones apply transactionally; edits/deletes cannot resurrect removed records.\n- [ ] Offline UI stays responsive; no promise of exact background execution on suspended iOS/Android apps.\n\n## Verification\nTest airplane mode, crash/restart, flaky network, concurrent devices, token expiry, profile switches, and failed batches."
+    },
+    {
+      "id": "M15",
+      "title": "[M15] Implement cached cold start, profile picker, and safe last-profile resume",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "shell",
+      "depends_on": ["M07", "M08", "M11", "M12"],
+      "plan_files": ["V1_MOBILE_SHELL_DESIGN_AND_PROFILE_STARTUP_PLAN.md", "WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md"],
+      "body_markdown": "## Scope\nRestore local identity/unlock state, read user-scoped profile summaries, choose a destination, and sync without a network startup waterfall.\n\n## Acceptance criteria\n- [ ] Zero profiles distinguishes truly new users from an empty local cache; fetch bootstrap before duplicating setup for an existing user.\n- [ ] One accessible profile opens directly regardless of its type.\n- [ ] Multiple profiles resume the last locally valid profile; first use/explicit switch displays the picker.\n- [ ] Removed/archived membership reconciles safely when connectivity returns.\n- [ ] Picker shows context, not another person, and does not expose balances.\n- [ ] Switching namespaces queries and reloads categories/rules/currency; unsent records stay in their original profile.\n\n## Verification\nMeasure cold/warm startup and test first use, offline return, account change, invitation, archival, and access removal."
+    },
+    {
+      "id": "M16",
+      "title": "[M16] Port accounts, balances, account detail, and credit-card cycle views",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "core-finance",
+      "depends_on": ["M04", "M06", "M14", "M15"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "BANK_SYNC_AND_TRANSACTION_LIFECYCLE.md"],
+      "body_markdown": "## Scope\nPort /accounts and /accounts/:id plus manual account operations, linked institution identity, closed-account handling, summaries, and existing card/bill/cycle behavior.\n\n## Acceptance criteria\n- [ ] Distinguish bank-reported, available, current, and projected balances according to actual backend semantics.\n- [ ] Account selection is profile-safe and uses masked identifying information appropriately.\n- [ ] Currency/FX fallbacks, manual/linked accounts, and card-specific fields remain visible and accurate.\n- [ ] Cached list/detail and online actions show honest freshness and permission states.\n\n## Verification\nCompare representative account/card totals with the web client and backend; exercise empty/closed/multi-currency accounts offline and online."
+    },
+    {
+      "id": "M17",
+      "title": "[M17] Port transaction lists, manual entry, editing, transfers, and calendar views",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "core-finance",
+      "depends_on": ["M16"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md"],
+      "body_markdown": "## Scope\nPort /transactions and transaction-dialog/detail subflows with native lists, search, filters, sort, calendar mode, pagination, selection/bulk operations, notes/tags, edits, deletion, and transfers.\n\n## Acceptance criteria\n- [ ] Inventory and preserve existing operations, including recurring/installment edit scope where applicable.\n- [ ] Locale-aware input round-trips through validated monetary values.\n- [ ] User categories/notes/attachments are not overwritten by sync.\n- [ ] Offline-supported actions queue safely; online-only actions are explicit.\n- [ ] Transfer presentation avoids interpreting both legs as income/expense twice.\n\n## Verification\nCompare filtered totals and edits on web/mobile, test double submission, deletion/replay, FX fallback, large lists, and en/de forms."
+    },
+    {
+      "id": "M18",
+      "title": "[M18] Port categories, category groups, payees, and collections",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "core-finance",
+      "depends_on": ["M17"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md"],
+      "body_markdown": "## Scope\nPort /categories, /payees, /collections and selection/detail dialogs, including existing category usage/deletion constraints, tax identifiers, icons/colors, group order, and account collection filtering.\n\n## Acceptance criteria\n- [ ] User-created records and system categories are handled distinctly without inventing IDs.\n- [ ] Category retirement/reassignment follows backend reference checks.\n- [ ] Alias/correction context can be loaded by Kip only for the current profile.\n- [ ] List selection/search and create/edit forms use the global native components.\n- [ ] Display labels are localized without renaming stored user data unexpectedly.\n\n## Verification\nTest usage-dependent deletion, group filtering, payee details/tax IDs, collection selection, and offline category availability."
+    },
+    {
+      "id": "M19",
+      "title": "[M19] Build Personal, Family, and Business dashboards from canonical financial data",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "core-finance",
+      "depends_on": ["M16", "M17", "M18"],
+      "plan_files": ["IOS_ANDROID_APP_PLAN.md", "MOBILE_DESIGN_SYSTEM_PLAN.md", "MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nAdapt the existing dashboard to native profile-specific summaries, recent activity, actionable bank/reconciliation status, and readable financial charts.\n\n## Acceptance criteria\n- [ ] Totals, transfers/exclusions, projection semantics, and FX status agree with the backend/web.\n- [ ] Personal prioritizes daily finances, Family shared finances, and Business cash flow without copying records.\n- [ ] Native hierarchy is polished; no decorative card overload or compressed desktop chart.\n- [ ] Cached freshness/offline states and accessible chart alternatives are provided.\n\n## Verification\nCompare known financial fixtures, both currencies/themes/languages, and small/large-screen layouts across profiles."
+    },
+    {
+      "id": "M20",
+      "title": "[M20] Port bank provider connections, authorization, settings, and sync status",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "banking",
+      "depends_on": ["M08", "M15", "M16"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "BANK_SYNC_AND_TRANSACTION_LIFECYCLE.md"],
+      "body_markdown": "## Scope\nPreserve supported Enable Banking, Pluggy, and SimpleFIN workflows through backend-owned provider integration and native connection UI. Cover /oauth/callback and /enable-banking equivalents.\n\n## Acceptance criteria\n- [ ] Authorization uses the supported system-browser/native provider flow, with allowed redirects and single-use state.\n- [ ] Provider credentials stay backend-only; mobile displays connection health, consent expiry, reauthorization, settings, and last sync.\n- [ ] Cancel/error/repeated callback/reconnect states are actionable.\n- [ ] Provider-specific options remain available and mobile callback changes preserve web callbacks.\n\n## Verification\nRun available provider sandbox/test flows and callback validation tests; record any untested production-provider behavior."
+    },
+    {
+      "id": "M21",
+      "title": "[M21] Add bank observation persistence and preserve authorization/booking/value dates",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "banking",
+      "depends_on": ["M10", "M13"],
+      "plan_files": ["BACKEND_IMPLEMENTATION_PLAN.md", "BANK_SYNC_AND_TRANSACTION_LIFECYCLE.md"],
+      "body_markdown": "## Scope\nAdd reviewed reconciliation persistence and provider-scoped identities. Preserve observed pending/posted data, user capture dates, bank dates, and raw provider evidence without conflating reporting dates.\n\n## Acceptance criteria\n- [ ] Migrations use the current Alembic head and audit existing duplicates/references before uniqueness changes.\n- [ ] Same provider observation resyncs idempotently; pending-to-posted re-keying has an explicit identity policy.\n- [ ] Provider corrections update bank-authoritative fields while user edits remain separate.\n- [ ] Existing web transaction status fields remain backward-compatible; new settlement/link states are additive.\n\n## Verification\nTest migration/rollback, duplicate legacy data, provider resync, missing dates, changed IDs, and changed bank amounts."
+    },
+    {
+      "id": "M22",
+      "title": "[M22] Implement delayed manual-bank reconciliation with exact-once balance effects",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "banking",
+      "depends_on": ["M21"],
+      "plan_files": ["RECONCILIATION_AND_RULES.md", "BACKEND_IMPLEMENTATION_PLAN.md", "KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nExtend the existing pure reconciliation engine/service rather than create a separate matcher. Use account, direction, currency, amount, date, merchant evidence, mutual uniqueness, and candidate margins.\n\n## Acceptance criteria\n- [ ] Exact/strong matches link one canonical transaction while preserving manual and bank provenance.\n- [ ] Generic text such as 'groceries' without merchant evidence does not trigger unsafe auto-linking.\n- [ ] Ambiguous/approximate matches require confirmation; declines persist.\n- [ ] Keep booked bank balances, local projections, unresolved overlaps, and cash/manual-only semantics distinct.\n- [ ] Successful links affect each financial total once; amount changes apply the verified delta, not a second full charge.\n- [ ] Never suppress unrelated bank transactions or expire unmatched manual entries automatically merely to balance totals.\n\n## Verification\nMeaningful tests cover 2–4 day delays, weekends, identical purchases, wrong accounts, tips/FX, pending/posted transitions, manual-only/bank-only, server replay, and two-device races."
+    },
+    {
+      "id": "M23",
+      "title": "[M23] Build reconciliation evidence, confirmation, and history screens",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "banking",
+      "depends_on": ["M17", "M22"],
+      "plan_files": ["RECONCILIATION_AND_RULES.md", "KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "IOS_ANDROID_APP_PLAN.md"],
+      "body_markdown": "## Scope\nPort the existing reconciliation queue/rules/history and add manual-bank questions within the same module framework.\n\n## Acceptance criteria\n- [ ] Compare manual/bank descriptions, dates, amounts, currency, account, and match evidence.\n- [ ] Confirm, decline, keep separate, edit, and manual-only actions respect roles and prevent double submission.\n- [ ] Existing transfer, invoice, recurring, and split matching remain available where enabled.\n- [ ] Linked detail preserves original Kip text and bank observations; amounts/totals update without unexplained jumps.\n\n## Verification\nResolve candidates on web then mobile and vice versa; test offline actions, conflicting decisions, declined reappearance, and en/de status explanations."
+    },
+    {
+      "id": "M24",
+      "title": "[M24] Benchmark local multilingual model/runtime compatibility on iOS and Android",
+      "scope": "v1",
+      "kind": "spike",
+      "phase": "kip",
+      "depends_on": ["M03", "M05"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nEvaluate llama.cpp with a reviewed React Native bridge and Qwen2.5-1.5B-Instruct Q4 GGUF; compare 0.5B for lower-memory devices. Re-check current llama.rn stability and actual compiled accelerator support instead of assuming Metal/Vulkan availability.\n\n## Acceptance criteria\n- [ ] Record model/license/hash, runtime/build versions, compatible device tiers, and download/recovery behavior.\n- [ ] Evaluate held-out reviewed en/de shorthand, misspellings, currencies, negation, income, missing fields, and ambiguous categories.\n- [ ] Measure cold/warm latency, memory, battery/thermal behavior, and structured-field accuracy after quantization.\n- [ ] No silent cloud fallback; unsupported devices retain deterministic/manual capture.\n- [ ] Runtime is cancellable and not left loaded unnecessarily in the background.\n\n## Verification\nPublish actual device benchmark results and a selection decision; no sub-150ms or fixed RAM guarantee without measurement."
+    },
+    {
+      "id": "M25",
+      "title": "[M25] Implement deterministic en/de Kip extraction and validated local model suggestions",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "kip",
+      "depends_on": ["M05", "M18", "M24"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "mobile/KipOfflineEngine.ts"],
+      "body_markdown": "## Scope\nReview the draft parser, then implement the amount/date/direction/category pipeline with local aliases, explicit user choices, rules, and model assistance when needed.\n\n## Acceptance criteria\n- [ ] Both en/de prompts work regardless of UI language, including '30€ groceries', '30 Euro bei Billa', income, decimal comma, and corrections.\n- [ ] Ambiguous '$', multiple numbers, account choices, dates, category or tax treatment ask for clarification rather than fabricating facts.\n- [ ] Strict grammar/schema controls shape; semantic checks validate amounts, dates, profile category IDs, currency precision, and known rules.\n- [ ] Model has no direct DB/API/balance-write permission.\n- [ ] User-edited category wins; no guessed VAT eligibility from a grocery keyword.\n\n## Verification\nRun reviewed extraction/abstention tests on the selected quantized model and deterministic fallback with invalid/hallucinated values rejected."
+    },
+    {
+      "id": "M26",
+      "title": "[M26] Introduce Kip floating assistant with offline transaction confirmation and sync",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "kip",
+      "depends_on": ["M14", "M17", "M23", "M25"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "MOBILE_DESIGN_SYSTEM_PLAN.md"],
+      "body_markdown": "## Scope\nBuild the right-thumb Kip action, iOS sheet/Android bottom sheet, text conversation, structured draft card, and confirmed transaction persistence.\n\n## Acceptance criteria\n- [ ] Active Personal/Family/Business profile, account, date, amount, currency, and category are visible/editable before save.\n- [ ] Keyboard, small screens, safe areas, accessibility, and reduced motion work; Kip does not obstruct other primary controls.\n- [ ] Confirm creates one local ledger/outbox operation, reports saved/offline/pending/synced states in en/de, and supports retry without duplicate creation.\n- [ ] Cash entries do not wait for a bank transaction; bank-linked manual entries reconcile when observations arrive.\n- [ ] Changing profiles cannot save a draft to the wrong ledger or leak previous chat context.\n\n## Verification\nEnd-to-end offline capture, app restart, reconnect, bank arrival before/after upload, decline, correction, and exact-once balance tests."
+    },
+    {
+      "id": "M27",
+      "title": "[M27] Port budgets and goals with profile-scoped progress views",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M17", "M18", "M19"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nPort /budgets and /goals with existing create/edit/delete, period, category/account selection, progress, and drill-down behaviors.\n\n## Acceptance criteria\n- [ ] Calculations use backend rules and preserve transfer/ignored/FX semantics.\n- [ ] Personal/Family availability follows modules; Business capability is server-resolved.\n- [ ] Native progress views have accessible numeric descriptions and en/de labels.\n- [ ] Cached data and online/offline mutation policy are explicit.\n\n## Verification\nCompare progress and period boundaries with web fixtures, including month/timezone changes and multi-currency cases."
+    },
+    {
+      "id": "M28",
+      "title": "[M28] Port recurring transactions, installments, and categorization rules",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M17", "M18"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "RECONCILIATION_AND_RULES.md"],
+      "body_markdown": "## Scope\nPort /recurring and /rules, rule conditions/actions/order/preview/import-export where supported, installment series editing, and projected-versus-actual reconciliation.\n\n## Acceptance criteria\n- [ ] Explicit user categories remain protected from rule overwrites.\n- [ ] Editing one occurrence versus a series uses the existing contract.\n- [ ] Recurring expectations are not counted as additional actual bank payments after settlement.\n- [ ] Complex rule forms are native step/section flows with localized validation.\n\n## Verification\nTest rule order and preview, series scopes, recurring link decisions, period projections, and parity with existing web tests."
+    },
+    {
+      "id": "M29",
+      "title": "[M29] Implement Family sharing, groups, splits, who-paid tracking, and settlements",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M10", "M15", "M17", "M27"],
+      "plan_files": ["WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md", "MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "RECONCILIATION_AND_RULES.md"],
+      "body_markdown": "## Scope\nImplement Family invitations/membership, Shared Expenses inside Family, and /groups plus /groups/:id with existing split/group balance behavior. Family is not limited to two members; seat policy comes from the approved plan.\n\n## Acceptance criteria\n- [ ] Private Personal ledgers are not disclosed to Family members.\n- [ ] Distinguish shared-account spending from one member paying with a private account; track payer/share/reimbursement without duplicate expenses.\n- [ ] If private payment is referenced, share only explicit expense details, not the private account's feed/balance.\n- [ ] Fixed/percentage shares, outstanding balances, settlements, and role limits have native en/de views.\n- [ ] Same operations sync safely across two devices without double settlement.\n\n## Verification\nTest membership removal, multiple members, personal-card payment, shared-account payment, repeated reimbursement, and group balance parity."
+    },
+    {
+      "id": "M30",
+      "title": "[M30] Port Business invoices, invoice detail, products, and payment links",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M10", "M18", "M23"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nPort /invoices, /invoices/:id, /invoices/products, invoice lines/products/prices, direction/status, supplier data, document previews, and existing transaction-payment links.\n\n## Acceptance criteria\n- [ ] Native step-based forms preserve invoice totals, deductions, number/series, dates, tax IDs, and existing validation.\n- [ ] Business modules/roles gate operations; Personal/Family do not expose business-only navigation.\n- [ ] An invoice obligation and its payment are distinct; viewing/creating an invoice does not fabricate a paid expense.\n- [ ] User edits and invoice reconciliation links survive sync.\n\n## Verification\nCompare representative invoices/products/calculations with web/backend, including partial/multiple-payment matching and en/de forms."
+    },
+    {
+      "id": "M31",
+      "title": "[M31] Port invoice schedules and scheduled invoice detail/actions",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M30"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nPort /invoices/schedules and /invoices/schedules/:id, including existing frequencies, period boundaries, summaries, emitted invoices, and schedule state actions.\n\n## Acceptance criteria\n- [ ] Schedule creation/edit/stop/end behavior follows the backend contract.\n- [ ] Dates/timezones/end reasons are translated and displayed accurately.\n- [ ] Emitted invoices navigate to native detail and do not duplicate on refresh/action retries.\n- [ ] Clearly distinguish user invoice schedules from Logg subscription billing.\n\n## Verification\nUse existing schedule fixtures to test period transitions, action retries, emitted records, and role permissions on both platforms."
+    },
+    {
+      "id": "M32",
+      "title": "[M32] Port reports, financial exports, and workspace fiscal configuration",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M19", "M27", "M28", "M30"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nPort /reports and current report filters/drill-down/export routes with native charts and accessible tabular summaries. Reuse existing fiscal packs/settings; do not invent legal coverage or accounting mappings.\n\n## Acceptance criteria\n- [ ] Date ranges, locale/timezone, currency, FX fallback, and exclusion rules match web/backend.\n- [ ] Native sharing/download of current supported exports works with permissions and safe file handling.\n- [ ] Business jurisdiction settings remain separate from UI language.\n- [ ] Dense charts have readable legends/data alternatives and consistent tokens.\n\n## Verification\nCompare exported/visible totals and periods with server fixtures in EUR/CHF and en/de, including long German labels."
+    },
+    {
+      "id": "M33",
+      "title": "[M33] Port transaction/investment imports, previews, and import logs",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M17", "M18"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nPort /import and the /assets/import alias, preserving supported transaction/investment import formats, preview, mapping, confirmation, failure rows, and logs.\n\n## Acceptance criteria\n- [ ] Use a native document picker and backend-supported import pipeline rather than treating any file as a receipt.\n- [ ] Preview target profile/account, locale/amount interpretation, duplicates, and row errors before submission.\n- [ ] Interrupted/repeated submissions do not re-import accepted rows blindly.\n- [ ] Online-required file imports explain their connectivity requirement; no unsupported offline promise.\n\n## Verification\nTest supported files, malformed/large files, duplicate imports, canceled picker, alias links, and failed-row recovery."
+    },
+    {
+      "id": "M34",
+      "title": "[M34] Port attachments, document previews, native sharing, and shared invoice links",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M17", "M30"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nPort existing transaction/invoice attachments and /i/:token using native file/photo picking, safe preview/download/share, upload state, and public invoice-link access. This is attachment parity, not new AI OCR.\n\n## Acceptance criteria\n- [ ] Preserve original file bytes and metadata; optimized preview copies are separate.\n- [ ] Authenticated attachments remain profile-scoped; public invoice tokens grant only intended read access.\n- [ ] Validate link route/host/parameters and handle expired/revoked links.\n- [ ] Device file loss, queued upload, canceled share, missing permissions, and unsupported previews have useful en/de states.\n- [ ] No archive-compliance claim from hashing alone.\n\n## Verification\nTest real representative files, offline/online upload transitions, share/open behavior, and authorized/unauthorized links."
+    },
+    {
+      "id": "M35",
+      "title": "[M35] Port assets, holdings, investment transactions, and portfolio views",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M16", "M32", "M33"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md"],
+      "body_markdown": "## Scope\nPort /assets and existing asset/group/holding/value/trade/import subflows using audited APIs and ledger semantics.\n\n## Acceptance criteria\n- [ ] Preserve valuation, historical profit/cost, currencies, fees, and ownership/account links.\n- [ ] List/detail/chart layouts are native and accessible; editing actions preserve supported validation.\n- [ ] Imports integrate with M33 and do not duplicate financial or holding movements.\n- [ ] Any genuinely blocked rare operation has a documented approved functional V1 treatment.\n\n## Verification\nCompare portfolio/trade fixtures with web calculations and test updates, missing pricing, historical values, and cross-currency display."
+    },
+    {
+      "id": "M36",
+      "title": "[M36] Preserve agent chat, agent management, and agent connections on mobile",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M04", "M07", "M15"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "V1_BUILD_PLAN.md"],
+      "body_markdown": "## Scope\nPort /agents, /agents/:id, /agents/connections and supported conversations, streaming, tools/proposals, knowledge, and connection settings; assess low-frequency configuration fallbacks explicitly.\n\n## Acceptance criteria\n- [ ] Respect existing agent availability gates and permissions.\n- [ ] Native streaming chat handles keyboard, cancel/error/reconnect, and proposal approvals without duplicate execution.\n- [ ] Do not conflate existing server agents/cloud providers with on-device Kip or silently route Kip prompts to them.\n- [ ] Validate connection secrets and redact logs; profile context survives navigation.\n- [ ] If a temporary fallback is necessary, specify safe session handoff and return behavior.\n\n## Verification\nExercise allowed conversations and action proposals against the existing agent backend, including reconnect and declined actions."
+    },
+    {
+      "id": "M37",
+      "title": "[M37] Port profile settings, preferences, administration, and capability-gated controls",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M10", "M15", "M18"],
+      "plan_files": ["MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md", "WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md"],
+      "body_markdown": "## Scope\nPort /workspace/settings and authorized /admin functionality, profile management, members/roles, theme/language/date preferences, security and existing backup/configuration subflows.\n\n## Acceptance criteria\n- [ ] Mobile says profile rather than exposing internal workspace terminology.\n- [ ] Membership, superuser checks, archive/remove actions, and unavailable modules match backend authorization.\n- [ ] Settings use iOS grouped/native controls and Android equivalents with full en/de copy.\n- [ ] Destructive actions protect pending records and offer clear consequences.\n- [ ] Unsupported low-frequency admin areas have an approved classification, never a placeholder presented as finished.\n\n## Verification\nTest roles, archived profiles, settings persistence, language/theme switching, and parity inventory completeness."
+    },
+    {
+      "id": "M38",
+      "title": "[M38] Implement Personal/Family/Business entitlements and approved subscription lifecycle",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "product-parity",
+      "depends_on": ["M10", "M29", "M30"],
+      "plan_files": ["WORKSPACE_SUBSCRIPTION_AND_PERSONAL_BUSINESS_PLAN.md", "APPROVAL_CHECKLIST.md"],
+      "body_markdown": "## Scope\nSeparate payer/subscription ownership from membership and profile data. Define seats/modules, concurrent personal/family/business access, trials/expiry, and upgrade/downgrade behavior. Select any payment provider/store purchase flow only through an explicit product decision.\n\n## Acceptance criteria\n- [ ] Backend verifies entitlements; mobile cannot grant access by editing a local plan flag.\n- [ ] Family members keep Personal data; upgrades do not silently move/merge ledgers.\n- [ ] Offline uses the last verified snapshot, while server rejects unauthorized sync with a recoverable state.\n- [ ] Expiry/downgrade preserves records and explains read/write limits.\n- [ ] Seat limits, pricing, payer transfer, and store billing requirements are documented instead of invented.\n- [ ] If payments are not ready, use explicit capability/provisioning treatment rather than fake paid subscriptions.\n\n## Verification\nTest role/entitlement combinations, revoked access, plan changes, queued writes, and the approved purchase verification mechanism."
+    },
+    {
+      "id": "M39",
+      "title": "[M39] Verify complete web/mobile feature parity and functional fallback boundaries",
+      "scope": "v1",
+      "kind": "verification",
+      "phase": "release-validation",
+      "depends_on": ["M09", "M20", "M23", "M26", "M27", "M28", "M29", "M30", "M31", "M32", "M33", "M34", "M35", "M36", "M37", "M38"],
+      "plan_files": ["V1_BUILD_PLAN.md", "MOBILE_FRONTEND_FEATURE_PORTING_PLAN.md"],
+      "body_markdown": "## Scope\nAudit every frozen/current web route and key subflow against the native app with common backend fixtures.\n\n## Acceptance criteria\n- [ ] Create/edit/delete on either client is reflected correctly on the other.\n- [ ] Every route has a delivered functional treatment or an explicitly approved deferral; no silently missing modules.\n- [ ] Temporary fallback is restricted to approved first-party low-frequency surfaces, has defined authentication, network-required behavior, and safe return handling.\n- [ ] Core finance/Kip/profile/bank flows are not generic WebViews.\n- [ ] Feature parity is distinguished from offline parity and exact visual parity.\n- [ ] Existing web tests/build/container checks pass or previously known failures are explicitly tracked.\n\n## Verification\nPublish a route-by-route completion matrix, end-to-end results, and remaining exceptions before release."
+    },
+    {
+      "id": "M40",
+      "title": "[M40] Complete native design, en/de, accessibility, and adaptive-layout audit",
+      "scope": "v1",
+      "kind": "verification",
+      "phase": "release-validation",
+      "depends_on": ["M39"],
+      "plan_files": ["IOS_ANDROID_APP_PLAN.md", "MOBILE_DESIGN_SYSTEM_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nReview every shipped screen/state on iPhone, iPad, Android phone, and adaptive larger layout using light/dark mode, English/German, large text, and assistive technology.\n\n## Acceptance criteria\n- [ ] iOS HIG hierarchy, native navigation/sheets, SF typography, grouped controls, and meaningful haptics are polished.\n- [ ] Android Material 3 hierarchy, predictive/system back, ripple, insets, and font scaling behave correctly.\n- [ ] 44pt/48dp targets, contrast, keyboard overlap, focus/reading order, accessible chart data, and reduced motion pass.\n- [ ] No raw one-off styles, emoji icons, clipped German labels, untranslated fallback text, or inconsistent profile names remain.\n- [ ] Screenshots and reviewed flow recordings link to fixes, not just claims.\n\n## Verification\nRecord a device/theme/language/accessibility matrix and resolve release-blocking findings."
+    },
+    {
+      "id": "M41",
+      "title": "[M41] Verify financial invariants, privacy, sync resilience, and mobile performance",
+      "scope": "v1",
+      "kind": "verification",
+      "phase": "release-validation",
+      "depends_on": ["M39"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "BACKEND_MOBILE_API_PLAN.md", "IMPLEMENTATION_CHECKLIST.md"],
+      "body_markdown": "## Scope\nStress offline/reconnect/replay, concurrent devices, provider corrections, permissions, cache isolation, model lifecycle, and financial totals. Review local/cloud data and diagnostic logging.\n\n## Acceptance criteria\n- [ ] Manual-bank linking, retry, refund, correction, transfer/split, and invoice payment do not double count.\n- [ ] Original user/profile ownership persists through logout, switches, background jobs, and rejected mutations.\n- [ ] Kip inference stays on-device; raw prompts are not copied to cloud logs; any synchronized notes follow explicit storage policy.\n- [ ] Deep links, downloads/model hashes, secure storage, and credentials are validated.\n- [ ] Actual cold/warm startup, scrolling, memory, model latency, thermal, battery, and sync behavior are recorded.\n\n## Verification\nPublish reproducible results and fix critical integrity/privacy/recovery failures before release."
+    },
+    {
+      "id": "M42",
+      "title": "[M42] Add optional biometric unlock and privacy-preserving APNs/FCM notifications",
+      "scope": "v1",
+      "kind": "task",
+      "phase": "release-integrations",
+      "depends_on": ["M08", "M13", "M20", "M23"],
+      "plan_files": ["BACKEND_MOBILE_API_PLAN.md", "IOS_ANDROID_APP_PLAN.md", "V1_BUILD_PLAN.md"],
+      "body_markdown": "## Scope\nImplement planned optional local biometric session unlock and backend device-token registration for supported sync/reconciliation notifications.\n\n## Acceptance criteria\n- [ ] Biometric unlock protects local access but never substitutes for server authorization.\n- [ ] APNs/FCM registration handles denied permissions, token rotation, logout, account changes, and invalid tokens.\n- [ ] Notifications do not expose balances/full financial descriptions on the lock screen.\n- [ ] Deep-linked notification targets check current profile membership and auth.\n- [ ] App stays fully usable without biometrics/push; real push signing/provider setup limitations are recorded.\n\n## Verification\nTest real-device registration/delivery where credentials exist and local unlock/fallback/revocation flows on both platforms."
+    },
+    {
+      "id": "M43",
+      "title": "[M43] Produce signed iOS/Android release builds and verify V1 distribution readiness",
+      "scope": "v1",
+      "kind": "release",
+      "phase": "release",
+      "depends_on": ["M40", "M41", "M42"],
+      "plan_files": ["V1_BUILD_PLAN.md", "IMPLEMENTATION_CHECKLIST.md"],
+      "body_markdown": "## Scope\nProduce reproducible Expo/EAS or approved native release builds, validate signing/update compatibility, and prepare install/test/store materials. Store submission requires the owner's accounts and explicit release instruction.\n\n## Acceptance criteria\n- [ ] Android/iOS development and release artifacts install and run on representative devices.\n- [ ] Correct environment, version, bundle/package IDs, universal/app links, permission copy, and native runtime constraints are verified.\n- [ ] Model download, offline startup, sync, auth, and migrations pass on release builds, not only debug.\n- [ ] en/de screenshots/store copy and actual privacy/data-use declarations are ready.\n- [ ] Release notes list verified parity, approved exceptions, and post-V1 work.\n- [ ] Update status/log/checklist and epic only with actual evidence; do not claim store publication without it.\n\n## Verification\nRecord artifact/build URLs and final release matrix; user-owned credentials or unavailable tests remain explicit blockers."
+    },
+    {
+      "id": "L01",
+      "title": "[L01] Add optional on-device English/German voice input for Kip",
+      "scope": "post-v1",
+      "kind": "enhancement",
+      "phase": "later-intake",
+      "depends_on": ["M26"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nAfter typed Kip is stable, add native on-device speech input and benchmark Whisper only where justified. Use Android on-device APIs/capability checks and iOS on-device requirements; preference flags alone do not guarantee offline recognition.\n\n## Acceptance criteria\n- [ ] Detect supported en/de offline recognition and language/model availability.\n- [ ] Unsupported devices retain typed input, without silent cloud audio upload.\n- [ ] Discard raw audio by default; confirmation uses the same validated Kip transaction flow.\n- [ ] Measure recognition accuracy, dialect limits, model size, memory, and battery.\n\n## Verification\nTest airplane mode, missing language assets, denied microphone permission, cancel, and German shorthand/dialect examples. This is not a V1 text-Kip release blocker."
+    },
+    {
+      "id": "L02",
+      "title": "[L02] Add physical receipt capture and on-device OCR into Kip drafts",
+      "scope": "post-v1",
+      "kind": "enhancement",
+      "phase": "later-intake",
+      "depends_on": ["M26", "M34"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nAdd one-shot camera/document capture, evaluate compatible offline OCR, and feed OCR evidence into reviewed expense/income drafts. Evaluate live Vision Camera processing only if required.\n\n## Acceptance criteria\n- [ ] Verify the actual wrapper's iOS/Android OCR engines and asset/download requirements.\n- [ ] Preserve original images; compressed thumbnails remain derivatives.\n- [ ] Merchant/date/total/tax candidates show source evidence and uncertainty; totals reconcile deterministically.\n- [ ] Duplicate receipt capture and later bank settlement link existing records rather than create another expense.\n- [ ] No unsupported 250ms/100%-accuracy promise.\n\n## Verification\nUse varied en/de receipts, blur/skew/faded text, multiple totals, payment ambiguity, and offline device tests."
+    },
+    {
+      "id": "L03",
+      "title": "[L03] Evaluate Austrian RKSV decoding and explicitly bounded verification",
+      "scope": "post-v1",
+      "kind": "spike",
+      "phase": "later-intake",
+      "depends_on": ["L02"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nResearch official RKSV receipt requirements and supported machine-readable formats, then implement deterministic parsing and a bounded verification design.\n\n## Acceptance criteria\n- [ ] Distinguish successful scan, payload decoding, signature checks, and full fiscal verification.\n- [ ] Preserve receipt ID/time/tax buckets and original evidence; explain fields unavailable from QR alone.\n- [ ] Define certificate/trust/key requirements and offline limits from official sources.\n- [ ] Missing/invalid/foreign codes fall back safely to normal receipt capture.\n- [ ] No claim that every receipt has one format, QR decoding proves tax compliance, or all scans take 10ms.\n\n## Verification\nDocument sources, reviewed fixtures, malformed/tampered code tests, and fiscal review before marketing verification claims."
+    },
+    {
+      "id": "L04",
+      "title": "[L04] Add structured digital invoice intake with PDF/XML extraction and OCR fallback",
+      "scope": "post-v1",
+      "kind": "enhancement",
+      "phase": "later-intake",
+      "depends_on": ["M30", "M34", "L02"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nSelect native-safe PDF text extraction and support validated embedded/structured invoice data when present before OCR/model fallback. Document picking/sharing does not grant automatic email-inbox access.\n\n## Acceptance criteria\n- [ ] Separate text, scanned, protected, corrupt, and structured invoice inputs.\n- [ ] Do not use pdf-lib as a general text extractor; benchmark any PDF.js/native option against actual mobile limits.\n- [ ] Preserve invoice numbers, line/tax evidence, currency, original files, and deterministic total checks.\n- [ ] User reviews a document/invoice draft; do not treat an unpaid invoice as an actual payment.\n- [ ] Re-import and bank settlement deduplicate/link correctly; no invented chart-of-account code.\n\n## Verification\nTest representative English/German invoices and incomplete/contradictory documents offline."
+    },
+    {
+      "id": "L05",
+      "title": "[L05] Design compliant receipt archiving and configured BMD/RZL export extensions",
+      "scope": "post-v1",
+      "kind": "enhancement",
+      "phase": "later-business",
+      "depends_on": ["M32", "M34", "L02"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md", "DACH_LOCALIZATION_AND_PRODUCT_PLAN.md"],
+      "body_markdown": "## Scope\nExtend current attachments into a reviewed archival service and accountant-configured export mappings. Confirm Austrian and other jurisdiction retention requirements instead of assuming a hash/bucket is a compliant archive.\n\n## Acceptance criteria\n- [ ] Original bytes, timestamps, access control, version/audit history, integrity verification, backups, retention, legal holds, and exportability are specified and tested.\n- [ ] SHA-256 detects integrity changes but is not described as immutable storage by itself.\n- [ ] Choose storage integration based on actual backend abstraction; do not assume SeaweedFS/MinIO is already configured.\n- [ ] BMD/RZL accounts/formats come from approved per-business mappings, never free AI invention.\n\n## Verification\nRecord recovery/retention/export tests and professional review before legal/compliance claims. Existing exports remain covered by M32."
+    },
+    {
+      "id": "L06",
+      "title": "[L06] Evaluate Kip LoRA fine-tuning only after measured base-model failures",
+      "scope": "post-v1",
+      "kind": "spike",
+      "phase": "later-ai",
+      "depends_on": ["M24", "M25", "M26"],
+      "plan_files": ["KIP_LOCAL_AI_AND_DELAYED_RECONCILIATION_PLAN.md"],
+      "body_markdown": "## Scope\nDecide whether adaptation is needed from real held-out extraction results rather than train immediately. Evaluate LoRA/Unsloth only for demonstrated recurring failures.\n\n## Acceptance criteria\n- [ ] Synthetic data is reviewed and separated from untouched evaluation data.\n- [ ] English/German shorthand, dates, currencies, corrections, ambiguity, and profile-safe categories are represented.\n- [ ] Do not use private prompts without permission or promise fixed training cost/time.\n- [ ] Compare base/fine-tuned/quantized accuracy, abstention, memory, and latency; keep reproducible licensed artifacts and rollback.\n\n## Verification\nPublish measured improvement and failure regression checks; no fine-tuning dependency for V1."
+    },
+    {
+      "id": "L07",
+      "title": "[L07] Expand mobile localization beyond English/German after V1 quality is proven",
+      "scope": "post-v1",
+      "kind": "enhancement",
+      "phase": "later-localization",
+      "depends_on": ["M05", "M40"],
+      "plan_files": ["DACH_LOCALIZATION_AND_PRODUCT_PLAN.md", "FRONTEND_INTEGRATION_PLAN.md"],
+      "body_markdown": "## Scope\nAdd approved additional mobile languages using the shared key/namespace/formatting system and existing web resources after en/de quality is verified.\n\n## Acceptance criteria\n- [ ] Select release languages explicitly and review finance terminology, pluralization, interpolation, accessibility, and long/RTL layout where applicable.\n- [ ] Preserve English/German coverage and existing web translations.\n- [ ] Region formatting remains independent from language and jurisdiction.\n- [ ] Kip extraction/model support is evaluated separately; translated UI alone does not imply the model understands a language.\n\n## Verification\nRun key coverage and native device/layout reviews for each language before advertising support."
+    }
+  ]
+}

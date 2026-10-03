@@ -1,0 +1,254 @@
+<p align="center">
+  <img src="docs/logo.svg" width="200" alt="Logg logo" />
+</p>
+<h1 align="center">Logg</h1>
+
+<h3 align="center">Finance apps want your data. This one doesn't.</h3>
+
+<p align="center">
+We believe personal finance should actually be <em>personal</em>. No corporation should sit between you and your financial data. Logg is an closed-source finance manager that runs on your own infrastructure, giving you full visibility into your accounts, spending, and habits, without surrendering a single byte to third parties. Take back control.
+</p>
+
+## Quick Start
+
+**Linux & macOS** (uses Docker or Podman; installs Docker if neither is present):
+
+```bash
+curl -fsSL https://useLogg.com/install.sh | bash
+```
+
+**Windows:** Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), then:
+
+```bash
+git clone https://github.com/Logg-finance/Logg.git && cd Logg
+docker compose up --build
+```
+
+Open [http://localhost:3000](http://localhost:3000) and create an account. That's it.
+
+<p align="center">
+  <img src="docs/screenshot.png" width="800" alt="Logg dashboard" />
+</p>
+
+## Features
+
+- Multi-account management with running balances
+- Transaction management with search, filters, and CSV export
+- File import (OFX, QIF, CAMT, CSV)
+- Auto-categorization rules engine
+- Recurring transactions and budgets
+- Goals and savings targets with progress tracking
+- Asset management with valuation tracking and growth rules
+- Reports: Net Worth and Income vs Expenses with category sparklines
+- Bank sync via providers (Pluggy for Brazilian banks, Enable Banking for ~2500 European PSD2 banks, SimpleFIN for US and international banks, extensible)
+- Multi-currency support with automatic FX conversion
+- Multi-user support with admin panel and registration controls
+- Two-factor authentication (TOTP) with brute-force protection
+- OIDC login support for Authentik, Pocket ID, and other standard providers
+- AI Agents (optional): self-hosted LLM chat with tool-use over your data, plus a per-agent RAG knowledge base
+
+## Bank Sync (Optional)
+
+Add credentials for any of the supported providers to `.env`, then restart with `docker compose up`. Configure one or both — each provider auto-registers when its credentials are present.
+
+### Pluggy — Brazilian banks
+
+Sign up at [pluggy.ai](https://pluggy.ai) and add:
+
+```
+PLUGGY_CLIENT_ID=your-client-id
+PLUGGY_CLIENT_SECRET=your-client-secret
+```
+
+### Enable Banking — European banks (PSD2)
+
+Sign up at [enablebanking.com](https://enablebanking.com), create a Production application, and download its PEM private key. Save the PEM to `./secrets/` (gitignored), then add:
+
+```
+ENABLE_BANKING_APP_ID=your-application-id
+ENABLE_BANKING_PRIVATE_KEY_FILE=/app/secrets/your-key.pem
+ENABLE_BANKING_OAUTH_REDIRECT_URI=https://your-host/oauth/callback
+```
+
+The redirect URI must match exactly one of the Allowed Redirect URLs in your EB application. Production EB requires HTTPS — for local development, expose your frontend via a tunnel (ngrok, cloudflared) or use the EB sandbox.
+
+> **Free tier — restricted mode.** Enable Banking's free plan requires you to pre-link the accounts you want to import inside the EB portal _before_ connecting from Logg. If you skip that step, the connection returns no accounts and Logg will surface a banner with a link to the portal.
+
+### SimpleFIN — US and international banks
+
+[SimpleFIN](https://www.simplefin.org/) is a read-only open protocol. No API key needed — each connection brings its own credentials via a single-use Setup Token from the [SimpleFIN Bridge](https://bridge.simplefin.org/). Just enable the feature:
+
+```
+SIMPLEFIN_ENABLED=true
+SIMPLEFIN_API_URL=https://beta-bridge.simplefin.org   # sandbox; use bridge.simplefin.org for real banks
+```
+
+Then in Logg: **Accounts → Connect Bank → SimpleFIN**, and paste the token. The [developer page](https://beta-bridge.simplefin.org/info/developers) gives out free demo tokens if you want to try it without a real bank.
+
+## OIDC Login (Optional)
+
+Logg can delegate login to any standard OIDC provider, including Authentik and Pocket ID. Create a confidential/web application in your provider and register this redirect URI:
+
+```
+https://your-Logg-host/api/auth/oidc/callback
+```
+
+Then add the provider settings to `.env` and restart:
+
+```
+OIDC_ENABLED=true
+OIDC_PROVIDER_NAME=Pocket ID
+OIDC_DISCOVERY_URL=https://id.example.com/.well-known/openid-configuration
+OIDC_CLIENT_ID=Logg
+OIDC_CLIENT_SECRET=your-client-secret
+# Optional; defaults to ${FRONTEND_URL}/api/auth/oidc/callback
+OIDC_REDIRECT_URI=https://your-Logg-host/api/auth/oidc/callback
+```
+
+To require SSO-only access after OIDC is configured, set `LOCAL_AUTH_ENABLED=false`. Logg will start in this mode only when `OIDC_ENABLED=true`, `OIDC_CLIENT_ID`, and `OIDC_DISCOVERY_URL` are all configured; otherwise startup fails with a validation error instead of leaving the instance with no usable login method. The login page shows an explicit configuration error if the server reports that neither local auth nor OIDC is available. If only the optional OIDC-config request fails, the client keeps local controls available with a warning; the backend remains authoritative and still rejects them in OIDC-only mode.
+
+With local auth disabled, Logg rejects password and passkey login, public registration, first-admin password setup, admin or workspace-invite creation of password-backed users, forgot/reset-password requests, password updates, new passkey registration or verification, and new TOTP setup or enablement. Local credential controls are hidden from login, account, setup, registration, and admin user-management screens. Existing users, password hashes, active sessions, passkeys, and TOTP configuration are not deleted; existing passkeys and TOTP can still be removed as cleanup paths. OIDC user provisioning and existing-account linking remain controlled separately by `OIDC_AUTO_REGISTER` and `OIDC_EXISTING_USER_LINK_MODE`.
+
+On a fresh OIDC-only instance, the first account must be provisioned through OIDC. Keep `OIDC_AUTO_REGISTER=true`, enable `OIDC_SYNC_ROLES=true`, and include one of the values from `OIDC_ADMIN_ROLES` in that identity's configured roles claim so the first login becomes a Logg administrator. Do not disable OIDC auto-registration before at least one matching account exists.
+
+New OIDC users are auto-provisioned by default (`OIDC_AUTO_REGISTER=true`) using verified email addresses. Set `OIDC_AUTO_REGISTER=false` to allow only existing Logg users whose email matches the provider claim.
+
+### Linking existing accounts
+
+An account that already exists in Logg (created with a password) is never linked to an OIDC identity automatically, so the first SSO login of an existing user is rejected by default. `OIDC_EXISTING_USER_LINK_MODE` controls that:
+
+```
+OIDC_EXISTING_USER_LINK_MODE=disabled
+```
+
+| Value                | Behavior                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| `disabled` (default) | Never link. Existing accounts must keep using password login.                               |
+| `verified_email`     | Link the existing account when the provider sends `email_verified=true` for the same email. |
+| `email`              | Link on a matching email alone, even without `email_verified`.                              |
+
+Use `verified_email` to move existing users to SSO without recreating their accounts and data. Only pick `email` if you trust your provider to own every address it asserts, since anyone able to set an email there could claim the matching Logg account. An OIDC identity already linked to another account is always rejected, in every mode.
+
+### Optional OIDC role sync
+
+Logg can also synchronize provider roles/groups into its built-in permissions when `OIDC_SYNC_ROLES=true`. The default claim is `groups`, which works well with Authentik group mappings and Pocket ID role/group assignments.
+
+```
+OIDC_SYNC_ROLES=true
+OIDC_ROLES_CLAIM=groups
+OIDC_ADMIN_ROLES=Logg-admins
+OIDC_WORKSPACE_ROLE_MAP={"Logg-owners":"owner","Logg-editors":"editor","Logg-viewers":"viewer"}
+```
+
+`OIDC_ADMIN_ROLES` grants or revokes Logg admin (`is_superuser`) on each OIDC login. `OIDC_WORKSPACE_ROLE_MAP` maps provider roles/groups to the user's Personal workspace role (`owner`, `editor`, or `viewer`); if multiple mapped roles are present, Logg applies the highest permission. Leave `OIDC_SYNC_ROLES=false` to keep all Logg roles managed locally.
+
+## Passkeys (Optional)
+
+Sign in with Touch ID, Face ID, Windows Hello, or a security key. Passkeys are on by default and need no configuration: they follow whatever address you open Logg on.
+
+Two rules come from the WebAuthn standard itself, and no setting can work around them:
+
+- **An IP address is never valid.** `http://192.168.1.10:3000` cannot register passkeys.
+- **Plain HTTP is never valid, except on `localhost`.**
+
+So use passkeys on `http://localhost:3000`, or put Logg on a domain behind an HTTPS reverse proxy. When serving from a domain, point `FRONTEND_URL` at it (this also covers CORS and OAuth callbacks):
+
+```
+FRONTEND_URL=https://Logg.example.com
+```
+
+To pin passkeys to one domain, set `WEBAUTHN_RP_ID` (use the parent domain if you reach Logg on several subdomains). Otherwise Logg follows the browser, and requests from an unusable address get an explanation in the UI instead of a silent failure.
+
+## Exchange Rates (Optional)
+
+For automatic currency conversion, add a free [Open Exchange Rates](https://openexchangerates.org/) key to `.env`:
+
+```
+OPENEXCHANGERATES_APP_ID=your-app-id
+```
+
+Rates are fetched on-demand when foreign-currency transactions are created. Without a key, cross-currency amounts default to a 1:1 fallback rate with a visual warning.
+
+## Timezone
+
+Balances, budgets, due dates and recurring transactions turn over at midnight in the application timezone. Set it once in Admin Settings → Date and time; a workspace that keeps its books somewhere else can pick its own timezone in Workspace settings. Without a saved value the application follows `TZ` from the environment, then the host timezone, then UTC, so an existing installation keeps behaving as before until someone changes it.
+
+## AI Agents (Optional)
+
+Self-hosted AI assistants over your Logg data — multi-provider (OpenAI, Anthropic, Ollama, OpenAI-compatible), tool-use via MCP, per-agent RAG knowledge base, ⌘J global chat panel.
+
+Add to `.env`:
+
+```
+AGENTS_ENABLED=true
+COMPOSE_PROFILES=agents
+```
+
+Then `docker compose up -d`. Settings → AI Agents to add a provider connection. Off by default; zero cost when off.
+
+### Without Docker
+
+`COMPOSE_PROFILES=agents` only tells Docker Compose to start the extra `mcp-server` container, so on a bare-metal or LXC install set `AGENTS_ENABLED=true` alone. The built-in MCP server is a plain uvicorn app in the same virtualenv; run it next to the API and point the backend at it:
+
+```bash
+# alongside the API/worker/beat processes
+uvicorn mcp_server.main:app --host 127.0.0.1 --port 8765
+```
+
+```
+AGENTS_ENABLED=true
+AGENTS_BUILTIN_MCP_URL=http://127.0.0.1:8765/mcp
+```
+
+Without that server the agents still chat, but they have no tools and cannot read your data. The backend log says which MCP server it failed to reach.
+
+## Tech Stack
+
+| Layer    | Stack                                 |
+| -------- | ------------------------------------- |
+| Backend  | FastAPI, SQLAlchemy, Alembic, Celery  |
+| Frontend | React, TypeScript, Vite, Tailwind CSS |
+| Database | PostgreSQL                            |
+| Queue    | Redis + Celery                        |
+
+## AI-Assisted Development
+
+Parts of this codebase were built with help of AI. All code is human-reviewed and no data leaves your environment.
+
+Contributing with AI is welcome. We review the author, not the tool: whatever wrote the diff, you own its quality, its fit with where Logg is going, and everything that happens after it merges. See [Using AI](CONTRIBUTING.md#using-ai).
+
+## Development
+
+```bash
+# Run backend tests (from backend/, needs Python 3.11+; same as CI)
+cd backend
+pip install -e ".[dev]"   # first time only — installs pytest and dev deps
+pytest
+
+# Rebuild after dependency changes
+docker compose up --build
+```
+
+If you've [mise](https://mise.jdx.dev/) installed, you can install backend/frontend directly with it:
+
+```
+# Install the Python version specified in .python-version,
+# and create a project virtual environment using that Python.
+# Install all tools and dependencies (include Python with dedicated venv)
+mise //...:install
+
+# Install only backend tools/deps
+mise backend:install
+
+# Run backend tests
+mise backend:test
+
+# Install frontend dependencies
+mise frontend:install
+
+# Run frontend linting
+mise frontend:lint
+
+# Run frontend build
+mise frontend:build
+```
